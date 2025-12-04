@@ -4,6 +4,7 @@
  */
 package br.eti.jfdr.airports.controllers;
 
+import br.eti.jfdr.airports.DTO.AirportNearMeDTO;
 import br.eti.jfdr.airports.entities.Airport;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.eti.jfdr.airports.services.AirportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -44,6 +46,19 @@ public class AirportController {
         Airport result = airportService.findByIataCode(iataCode);
         
         if (result == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(result);
+        }
+    }
+    
+    @GetMapping("/nearme")
+    public ResponseEntity<List<AirportNearMeDTO>> findNearMe(
+            @RequestParam double latitude,
+            @RequestParam double longitude) {
+        List<AirportNearMeDTO> result = airportService.findNearMe(latitude, longitude);
+        
+        if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(result);
